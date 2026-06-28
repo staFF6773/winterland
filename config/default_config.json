@@ -1,0 +1,75 @@
+{
+  "app": {
+    "version": "1.0.0",
+    "language": "es",
+    "theme": "dark",
+    "accent_color": "#3b82f6",
+    "first_run": true,
+    "check_updates": false
+  },
+  "wallpapers": {
+    "folder": "~/Pictures/Wallpapers",
+    "thumbnail_size": 220,
+    "thumbnail_cache": "~/.cache/frostwall/thumbnails",
+    "recursive_scan": true,
+    "supported_image_extensions": [".png", ".jpg", ".jpeg", ".webp", ".bmp"],
+    "supported_video_extensions": [".mp4", ".webm", ".gif"]
+  },
+  "hyprland": {
+    "socket": "",
+    "default_monitor": "",
+    "apply_without_reload": true
+  },
+  "hyprpaper": {
+    "executable": "hyprpaper",
+    "preload_on_start": true,
+    "config_path": "~/.config/hypr/hyprpaper.conf"
+  },
+  "mpvpaper": {
+    "executable": "mpvpaper",
+    "mpv_options": "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=decoder --video-latency-hacks=yes",
+    "default_volume": 0
+  },
+  "rotation": {
+    "enabled": false,
+    "interval_seconds": 1800,
+    "random_order": false,
+    "playlist_id": null
+  },
+  "startup": {
+    "auto_start": false,
+    "restore_last": true,
+    "last_wallpapers": {}
+  },
+  "ui": {
+    "sidebar_collapsed": false,
+    "grid_columns": 4,
+    "show_filenames": true,
+    "animations_enabled": true,
+    "window_geometry": {
+      "width": 1280,
+      "height": 800,
+      "x": 100,
+      "y": 100
+    }
+  },
+  "shortcuts": {
+    "add_wallpaper": "Ctrl+O",
+    "search": "Ctrl+F",
+    "save_settings": "Ctrl+S",
+    "open_settings": "Ctrl+Comma",
+    "play_pause": "Space",
+    "next_wallpaper": "R",
+    "toggle_favorite": "F",
+    "delete": "Del",
+    "fullscreen": "F11"
+  },
+  "notifications": {
+    "enabled": true,
+    "on_wallpaper_change": true,
+    "on_errors": true
+  },
+  "history": {
+    "max_entries": 100
+  }
+}

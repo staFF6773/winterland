@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Wallpaper Manager
+Name[es]=Gestor de Fondos
+GenericName=Wallpaper Manager for Hyprland
+Comment=Administra fondos de pantalla estáticos y animados para Hyprland
+Comment[es]=Administra fondos de pantalla estáticos y animados para Hyprland
+Exec=wallpaper-manager
+Icon=wallpaper-manager
+Terminal=false
+Categories=Utility;DesktopSettings;Qt;
+Keywords=wallpaper;hyprland;wayland;background;fondo;
+StartupNotify=true
+StartupWMClass=wallpaper-manager

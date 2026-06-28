@@ -1,0 +1,8 @@
+# Dependencias de Python para Wallpaper Manager (Hyprland)
+# Compatible con Python 3.12+
+
+PySide6>=6.7.0
+Pillow>=10.3.0
+watchdog>=4.0.0
+psutil>=5.9.0
+toml>=0.10.2

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Frostwall
+GenericName=Frostwall Wallpaper Manager
+Comment=Minimalist wallpaper manager for Hyprland with dynamic theming
+Exec=frostwall
+Icon=frostwall
+Terminal=false
+Categories=Utility;DesktopSettings;Qt;
+Keywords=wallpaper;hyprland;wayland;background;frostwall;
+StartupNotify=true
+StartupWMClass=frostwall
