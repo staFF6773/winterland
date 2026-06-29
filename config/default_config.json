@@ -27,9 +27,12 @@
   },
   "mpvpaper": {
     "executable": "mpvpaper",
-    "mpv_options": "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=vo --sws-fast=yes",
+    "mpv_options": "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=vo --sws-fast=yes --cache=no",
     "default_volume": 0,
-    "pause_on_focus_loss": true
+    "pause_on_focus_loss": true,
+    "idle_pause_enabled": true,
+    "idle_pause_minutes": 5,
+    "max_fps": null
   },
   "rotation": {
     "enabled": false,

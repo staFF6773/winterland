@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QSpinBox,
     QTabWidget,
     QVBoxLayout,
@@ -38,6 +39,12 @@ class SettingsDialog(QDialog):
         self.setMinimumSize(640, 480)
         self._build_ui()
         self._load_values()
+        # Texto del diálogo más grande que el base de 14px global; limitado
+        # a este diálogo para no alterar el resto de la aplicación.
+        self.setStyleSheet(
+            "QLabel, QCheckBox, QRadioButton, QSpinBox, QDoubleSpinBox, "
+            "QLineEdit, QComboBox, QTabBar, QPushButton { font-size: 16px; }"
+        )
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
@@ -120,6 +127,9 @@ class SettingsDialog(QDialog):
 
     def _build_integration_tab(self) -> QWidget:
         tab = QWidget()
+        tab.setStyleSheet(
+            "QLabel, QCheckBox, QSpinBox, QLineEdit, QPushButton { font-size: 18px; }"
+        )
         form = QFormLayout(tab)
         form.setContentsMargins(24, 24, 24, 24)
         form.setSpacing(12)
@@ -154,6 +164,33 @@ class SettingsDialog(QDialog):
         )
         form.addRow("", self.pause_on_focus_check)
 
+        self.idle_pause_check = QCheckBox("Pause animated wallpapers when idle")
+        self.idle_pause_check.setToolTip(
+            "Pauses the animated wallpaper after a period without window\n"
+            "or workspace changes. Greatly reduces CPU/GPU usage when away.\n"
+            "Resumes automatically when you return to the desktop."
+        )
+        form.addRow("", self.idle_pause_check)
+
+        self.idle_minutes_spin = QSpinBox()
+        self.idle_minutes_spin.setRange(1, 120)
+        self.idle_minutes_spin.setSuffix(" min")
+        self.idle_minutes_spin.setToolTip(
+            "Minutes of inactivity before pausing the animated wallpaper."
+        )
+        form.addRow("Idle pause after:", self.idle_minutes_spin)
+
+        self.max_fps_spin = QSpinBox()
+        self.max_fps_spin.setRange(0, 60)
+        self.max_fps_spin.setSuffix(" fps")
+        self.max_fps_spin.setSpecialValueText("Off (full smoothness)")
+        self.max_fps_spin.setToolTip(
+            "Caps the animated wallpaper frame rate to save CPU/GPU.\n"
+            "No image-quality loss, only slightly choppier motion.\n"
+            "Off = no cap."
+        )
+        form.addRow("Max wallpaper FPS:", self.max_fps_spin)
+
         self.default_monitor_edit = QLineEdit()
         self.default_monitor_edit.setPlaceholderText("(auto)")
         form.addRow("Default monitor:", self.default_monitor_edit)
@@ -164,7 +201,11 @@ class SettingsDialog(QDialog):
         self.restore_check = QCheckBox("Restore last wallpaper on startup")
         form.addRow("", self.restore_check)
 
-        return tab
+        scroll = QScrollArea()
+        scroll.setWidget(tab)
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        return scroll
 
     def _build_rotation_tab(self) -> QWidget:
         tab = QWidget()
@@ -265,6 +306,10 @@ class SettingsDialog(QDialog):
         self.mpvpaper_exec_edit.setText(str(s.get("mpvpaper.executable", "mpvpaper")))
         self.mpv_options_edit.setText(str(s.get("mpvpaper.mpv_options", "")))
         self.pause_on_focus_check.setChecked(bool(s.get("mpvpaper.pause_on_focus_loss", True)))
+        self.idle_pause_check.setChecked(bool(s.get("mpvpaper.idle_pause_enabled", False)))
+        self.idle_minutes_spin.setValue(int(s.get("mpvpaper.idle_pause_minutes", 5)))
+        max_fps = s.get("mpvpaper.max_fps")
+        self.max_fps_spin.setValue(int(max_fps) if isinstance(max_fps, int) else 0)
         self.default_monitor_edit.setText(str(s.get("hyprland.default_monitor", "")))
         self.autostart_check.setChecked(bool(s.get("startup.auto_start", False)))
         self.restore_check.setChecked(bool(s.get("startup.restore_last", True)))
@@ -292,6 +337,10 @@ class SettingsDialog(QDialog):
         s.set("mpvpaper.executable", self.mpvpaper_exec_edit.text() or "mpvpaper")
         s.set("mpvpaper.mpv_options", self.mpv_options_edit.text())
         s.set("mpvpaper.pause_on_focus_loss", self.pause_on_focus_check.isChecked())
+        s.set("mpvpaper.idle_pause_enabled", self.idle_pause_check.isChecked())
+        s.set("mpvpaper.idle_pause_minutes", self.idle_minutes_spin.value())
+        fps_value = self.max_fps_spin.value()
+        s.set("mpvpaper.max_fps", fps_value if fps_value > 0 else None)
         s.set("hyprland.default_monitor", self.default_monitor_edit.text())
         s.set("startup.auto_start", self.autostart_check.isChecked())
         s.set("startup.restore_last", self.restore_check.isChecked())
@@ -315,6 +364,8 @@ class SettingsDialog(QDialog):
             self._manager.enable_autostart()
         else:
             self._manager.disable_autostart()
+
+        self._manager.reconfigure_focus_monitor()
 
         super().accept()
 

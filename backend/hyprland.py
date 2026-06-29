@@ -159,6 +159,34 @@ class Hyprland:
                 return monitor
         return None
 
+    def focused_workspace_id(self) -> int | None:
+        """Devuelve el ID del workspace activo en el monitor con foco.
+
+        Es más barato que inspeccionar :meth:`list_monitors` desde fuera
+        porque reutiliza una única llamada a ``hyprctl``.
+        """
+        try:
+            for m in self.list_monitors():
+                if m.get("focused"):
+                    ws = m.get("activeWorkspace", {})
+                    if isinstance(ws, dict):
+                        return ws.get("id")
+        except RuntimeError:
+            pass
+        return None
+
+    def list_clients(self) -> list[dict[str, Any]]:
+        """Devuelve la lista de ventanas (clientes) actuales."""
+        try:
+            data = self.run_json("clients")
+            if isinstance(data, list):
+                return data
+            logger.warning("Unexpected hyprctl clients output: %r", data)
+            return []
+        except RuntimeError as exc:
+            logger.error("Could not list clients: %s", exc)
+            return []
+
     def active_window(self) -> dict[str, Any] | None:
         """Devuelve la ventana activa (raw) o ``None`` si no hay ninguna."""
         try:
@@ -176,10 +204,6 @@ class Hyprland:
         Hyprland; ventanas tiled o floating dejan visible el fondo.
         """
         try:
-            monitors = self.run_json("monitors")
-            if not isinstance(monitors, list):
-                return False
-
             clients = self.run_json("clients")
             if not isinstance(clients, list):
                 return False

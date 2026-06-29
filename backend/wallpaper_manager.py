@@ -22,6 +22,7 @@ from config.settings import Settings
 from utils.file_utils import expand, is_animated, is_image
 from utils.notifications import Notifier
 from backend.favorites import Favorites
+from backend.focus_monitor import FocusMonitor
 from backend.history import History
 from backend.hyprland import Hyprland
 from backend.hyprpaper import Hyprpaper, HyprpaperError
@@ -81,6 +82,9 @@ class WallpaperManager:
             hyprland=self.hyprland,
         )
         self.notifier = Notifier(enabled=bool(self.settings.get("notifications.enabled", True)))
+
+        # Monitor de foco/inactividad para pausar fondos animados.
+        self.focus_monitor: FocusMonitor | None = None
 
         # Estado interno.
         self._rotation_thread: threading.Thread | None = None
@@ -151,7 +155,13 @@ class WallpaperManager:
                 pass
             try:
                 mpv_opts = str(self.settings.get("mpvpaper.mpv_options", ""))
-                success = self.mpvpaper.play(wallpaper_path, target_monitor, mpv_options=mpv_opts)
+                max_fps = self.settings.get("mpvpaper.max_fps")
+                success = self.mpvpaper.play(
+                    wallpaper_path,
+                    target_monitor,
+                    mpv_options=mpv_opts,
+                    max_fps=max_fps if isinstance(max_fps, int) else None,
+                )
                 wallpaper_type = "video"
             except MpvpaperError as exc:
                 logger.error("Error aplicando fondo animado: %s", exc)
@@ -387,6 +397,38 @@ class WallpaperManager:
         return success
 
     # ------------------------------------------------------------------ #
+    # Monitor de foco/inactividad
+    # ------------------------------------------------------------------ #
+    def start_focus_monitor(self) -> None:
+        """Crea e inicia el monitor de foco/inactividad si alguna función
+        de pausa está habilitada."""
+        if self.focus_monitor is None:
+            self.focus_monitor = FocusMonitor(
+                self.hyprland, self.mpvpaper, settings=self.settings
+            )
+        if self._focus_monitor_should_run():
+            self.focus_monitor.start()
+
+    def reconfigure_focus_monitor(self) -> None:
+        """Aplica la configuración actual al monitor de foco/inactividad.
+
+        Arranca o detiene el temporizador según las opciones de pausa. Las
+        opciones finer-grained (minutos de inactividad) se leen en vivo.
+        """
+        if self.focus_monitor is None:
+            self.start_focus_monitor()
+            return
+        if self._focus_monitor_should_run():
+            self.focus_monitor.start()
+        else:
+            self.focus_monitor.stop()
+
+    def _focus_monitor_should_run(self) -> bool:
+        return bool(
+            self.settings.get("mpvpaper.pause_on_focus_loss", True)
+        ) or bool(self.settings.get("mpvpaper.idle_pause_enabled", False))
+
+    # ------------------------------------------------------------------ #
     # Utilidades
     # ------------------------------------------------------------------ #
     def _default_monitor_name(self) -> str:
@@ -407,5 +449,7 @@ class WallpaperManager:
     def cleanup(self) -> None:
         """Limpia recursos antes de cerrar la aplicación."""
         self.stop_rotation()
+        if self.focus_monitor is not None:
+            self.focus_monitor.stop()
         self.library.stop_watching()
         logger.info("WallpaperManager detenido")
