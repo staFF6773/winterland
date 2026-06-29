@@ -57,7 +57,7 @@ def main() -> int:
     if not _check_environment():
         return 1
 
-    from PySide6.QtCore import Qt, QTimer
+    from PySide6.QtCore import Qt
     from PySide6.QtWidgets import QApplication
 
     QApplication.setHighDpiScaleFactorRoundingPolicy(
@@ -90,10 +90,6 @@ def main() -> int:
 
     window = MainWindow(manager, theme)
     window.show()
-
-    timer = QTimer()
-    timer.start(200)
-    timer.timeout.connect(lambda: None)
 
     _install_signal_handlers(app)
 

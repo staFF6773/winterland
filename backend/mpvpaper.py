@@ -44,7 +44,7 @@ class Mpvpaper:
         self,
         *,
         executable: str = "mpvpaper",
-        mpv_options: str = "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=decoder --video-latency-hacks=yes",
+        mpv_options: str = "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=vo --sws-fast=yes",
         hyprland: Hyprland | None = None,
     ) -> None:
         self.executable = executable

@@ -27,7 +27,7 @@
   },
   "mpvpaper": {
     "executable": "mpvpaper",
-    "mpv_options": "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=decoder --video-latency-hacks=yes",
+    "mpv_options": "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=vo --sws-fast=yes",
     "default_volume": 0
   },
   "rotation": {
