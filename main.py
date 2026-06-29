@@ -52,7 +52,7 @@ def _install_signal_handlers(app) -> None:
 
 def main() -> int:
     setup_logging(level=logging.INFO)
-    logger.info("Starting Frostwall...")
+    logger.info("Starting Winterland...")
 
     if not _check_environment():
         return 1
@@ -65,9 +65,9 @@ def main() -> int:
     )
 
     app = QApplication(sys.argv)
-    app.setApplicationName("Frostwall")
-    app.setApplicationDisplayName("Frostwall")
-    app.setOrganizationName("Frostwall")
+    app.setApplicationName("Winterland")
+    app.setApplicationDisplayName("Winterland")
+    app.setOrganizationName("Winterland")
     app.setApplicationVersion("1.0.0")
 
     theme = ThemeManager(app)
@@ -98,7 +98,7 @@ def main() -> int:
     _install_signal_handlers(app)
 
     exit_code = app.exec()
-    logger.info("Frostwall exited with code %d", exit_code)
+    logger.info("Winterland exited with code %d", exit_code)
     return exit_code
 
 

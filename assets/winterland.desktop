@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Winterland
+GenericName=Wallpaper Manager for Hyprland
+Comment=Static and Animated Wallpaper Manager for Hyprland
+Exec=winterland
+Icon=winterland
+Terminal=false
+Categories=Utility;DesktopSettings;Qt;
+Keywords=wallpaper;hyprland;wayland;background;
+StartupNotify=true
+StartupWMClass=winterland
