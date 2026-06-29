@@ -147,6 +147,13 @@ class SettingsDialog(QDialog):
         )
         form.addRow("MPV options:", self.mpv_options_edit)
 
+        self.pause_on_focus_check = QCheckBox("Pause animated wallpapers when desktop is covered")
+        self.pause_on_focus_check.setToolTip(
+            "Pauses mpv when any window has focus on your active workspace.\n"
+            "The wallpaper will resume when you focus the desktop."
+        )
+        form.addRow("", self.pause_on_focus_check)
+
         self.default_monitor_edit = QLineEdit()
         self.default_monitor_edit.setPlaceholderText("(auto)")
         form.addRow("Default monitor:", self.default_monitor_edit)
@@ -257,6 +264,7 @@ class SettingsDialog(QDialog):
         self.hyprpaper_conf_edit.setText(str(s.get("hyprpaper.config_path", "")))
         self.mpvpaper_exec_edit.setText(str(s.get("mpvpaper.executable", "mpvpaper")))
         self.mpv_options_edit.setText(str(s.get("mpvpaper.mpv_options", "")))
+        self.pause_on_focus_check.setChecked(bool(s.get("mpvpaper.pause_on_focus_loss", True)))
         self.default_monitor_edit.setText(str(s.get("hyprland.default_monitor", "")))
         self.autostart_check.setChecked(bool(s.get("startup.auto_start", False)))
         self.restore_check.setChecked(bool(s.get("startup.restore_last", True)))
@@ -283,6 +291,7 @@ class SettingsDialog(QDialog):
         s.set("hyprpaper.config_path", self.hyprpaper_conf_edit.text())
         s.set("mpvpaper.executable", self.mpvpaper_exec_edit.text() or "mpvpaper")
         s.set("mpvpaper.mpv_options", self.mpv_options_edit.text())
+        s.set("mpvpaper.pause_on_focus_loss", self.pause_on_focus_check.isChecked())
         s.set("hyprland.default_monitor", self.default_monitor_edit.text())
         s.set("startup.auto_start", self.autostart_check.isChecked())
         s.set("startup.restore_last", self.restore_check.isChecked())

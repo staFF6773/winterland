@@ -12,6 +12,7 @@ _PROJECT_DIR: Final[Path] = Path(__file__).resolve().parent
 if str(_PROJECT_DIR) not in sys.path:
     sys.path.insert(0, str(_PROJECT_DIR))
 
+from backend.focus_monitor import FocusMonitor
 from backend.wallpaper_manager import WallpaperManager, WallpaperManagerError
 from config.settings import Settings, SettingsError
 from gui.main_window import MainWindow
@@ -90,6 +91,10 @@ def main() -> int:
 
     window = MainWindow(manager, theme)
     window.show()
+
+    focus_monitor = FocusMonitor(manager.hyprland, manager.mpvpaper, parent=window)
+    if bool(settings.get("mpvpaper.pause_on_focus_loss", True)):
+        focus_monitor.start()
 
     _install_signal_handlers(app)
 

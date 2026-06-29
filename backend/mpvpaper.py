@@ -172,11 +172,11 @@ class Mpvpaper:
     # ------------------------------------------------------------------ #
     def pause(self, monitor: str | None = None) -> bool:
         """Pausa la reproducción."""
-        return self._send_mpv_command(["cycle", "pause"], monitor)
+        return self._send_mpv_command(["set", "pause", "yes"], monitor)
 
     def resume(self, monitor: str | None = None) -> bool:
         """Reanuda la reproducción."""
-        return self._send_mpv_command(["cycle", "pause"], monitor)
+        return self._send_mpv_command(["set", "pause", "no"], monitor)
 
     def play_pause(self, monitor: str | None = None) -> bool:
         """Alterna entre reproducción y pausa."""
@@ -258,11 +258,25 @@ class Mpvpaper:
             client.close()
             return True
         except (FileNotFoundError, ConnectionRefusedError, OSError):
-            # Fallback: pausa mediante SIGSTOP / SIGCONT.
+            # Fallback: pausa/reanudación mediante SIGSTOP / SIGCONT.
+            if command[:3] == ["set", "pause", "yes"]:
+                return self._pause_via_signal(target, pause=True)
+            if command[:3] == ["set", "pause", "no"]:
+                return self._pause_via_signal(target, pause=False)
             if command[:2] == ["cycle", "pause"]:
                 return self._toggle_pause_via_signal(target)
             logger.warning("No se pudo enviar comando IPC a mpvpaper en %s", target)
             return False
+
+    def _pause_via_signal(self, monitor: str, *, pause: bool) -> bool:
+        """Pausa o reanuda mpv mediante señales Unix (fallback)."""
+        for pid, _ in self._find_processes():
+            try:
+                os.kill(pid, signal.SIGSTOP if pause else signal.SIGCONT)
+                return True
+            except (ProcessLookupError, PermissionError):
+                continue
+        return False
 
     def _toggle_pause_via_signal(self, monitor: str) -> bool:
         """Alterna pausa mediante señales Unix (fallback).
@@ -271,7 +285,6 @@ class Mpvpaper:
         """
         for pid, _ in self._find_processes():
             try:
-                # Comprobar estado actual.
                 proc = psutil.Process(pid)
                 if proc.status() == psutil.STATUS_STOPPED:
                     os.kill(pid, signal.SIGCONT)

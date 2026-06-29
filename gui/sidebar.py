@@ -8,6 +8,7 @@ from PySide6.QtGui import QColor, QEnterEvent, QIcon
 from PySide6.QtWidgets import (
     QButtonGroup,
     QFrame,
+    QLabel,
     QPushButton,
     QSizePolicy,
     QVBoxLayout,
@@ -117,6 +118,16 @@ class Sidebar(QFrame):
         self.btn_settings.clicked.connect(lambda: self.section_changed.emit(SECTION_SETTINGS))
 
         self.btn_library.setChecked(True)
+
+        layout.addStretch()
+
+        self._dot = QLabel()
+        self._dot.setFixedSize(6, 6)
+        self._dot.setStyleSheet(
+            "background-color: #565f89; border-radius: 3px; min-width: 6px; max-width: 6px; min-height: 6px; max-height: 6px;"
+        )
+        self._dot.setToolTip("Idle")
+        layout.addWidget(self._dot, 0, Qt.AlignmentFlag.AlignCenter)
 
     def set_active(self, section: str) -> None:
         btn = self._buttons.get(section)

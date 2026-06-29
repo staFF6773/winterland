@@ -28,7 +28,8 @@
   "mpvpaper": {
     "executable": "mpvpaper",
     "mpv_options": "--no-audio --loop-file --panscan=1.0 --hwdec=auto-safe --framedrop=vo --sws-fast=yes",
-    "default_volume": 0
+    "default_volume": 0,
+    "pause_on_focus_loss": true
   },
   "rotation": {
     "enabled": false,

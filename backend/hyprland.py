@@ -159,6 +159,43 @@ class Hyprland:
                 return monitor
         return None
 
+    def active_window(self) -> dict[str, Any] | None:
+        """Devuelve la ventana activa (raw) o ``None`` si no hay ninguna."""
+        try:
+            data = self.run_json("activewindow")
+            if isinstance(data, dict) and data.get("class"):
+                return data
+        except RuntimeError:
+            pass
+        return None
+
+    def is_fullscreen_on_workspace(self, workspace_id: int) -> bool:
+        """Indica si hay una ventana a pantalla completa en el workspace dado.
+
+        Solo las ventanas fullscreen cubren completamente el wallpaper en
+        Hyprland; ventanas tiled o floating dejan visible el fondo.
+        """
+        try:
+            monitors = self.run_json("monitors")
+            if not isinstance(monitors, list):
+                return False
+
+            clients = self.run_json("clients")
+            if not isinstance(clients, list):
+                return False
+
+            for c in clients:
+                ws = c.get("workspace", {})
+                if (
+                    ws.get("id") == workspace_id
+                    and c.get("mapped", False)
+                    and c.get("fullscreen", 0) > 0
+                ):
+                    return True
+            return False
+        except RuntimeError:
+            return False
+
     # ------------------------------------------------------------------ #
     # Utilidades
     # ------------------------------------------------------------------ #
