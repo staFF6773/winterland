@@ -1,117 +1,119 @@
-# Wallpaper Manager para Hyprland
+# Winterland
 
-Aplicación de escritorio moderna para **Arch Linux** y el compositor **Hyprland** que permite administrar fondos de pantalla estáticos y animados de forma eficiente.
+Modern desktop wallpaper manager for **Arch Linux** and the **Hyprland** compositor. Manage static and animated wallpapers efficiently.
 
-## Características
+## Features
 
-### Fondos estáticos
-- Soporte para PNG, JPG, JPEG, WEBP y BMP.
-- Vista previa antes de aplicar.
-- Aplicación con un clic.
-- Recordatorio del último fondo utilizado.
-- Un fondo diferente para cada monitor mediante `hyprpaper`.
+### Static wallpapers
+- Supports PNG, JPG, JPEG, WEBP, and BMP
+- Preview before applying
+- One-click apply
+- Remembers last used wallpaper
+- Per-monitor wallpapers via `hyprpaper`
 
-### Fondos animados
-- Soporte para MP4, WEBM y GIF.
-- Integración con `mpvpaper` para Wayland.
-- Controles de reproducción, pausa, detención y reinicio.
-- Selección del monitor destino.
+### Animated wallpapers
+- Supports MP4, WEBM, and GIF
+- Integration with `mpvpaper` for Wayland
+- Play, pause, stop, and restart controls
+- Target monitor selection
 
-### Biblioteca
-- Escaneo automático de carpetas.
-- Miniaturas en cuadrícula.
-- Búsqueda por nombre.
-- Filtros por imágenes, vídeos o GIF.
-- Favoritos.
-- Historial de fondos aplicados.
+### Library
+- Automatic folder scanning
+- Grid thumbnails
+- Search by name
+- Filters for images, videos, or GIFs
+- Favorites
+- Wallpaper history
 
-### Configuración
-- Carpeta principal configurable.
-- Inicio automático con Hyprland.
-- Restauración del último fondo al iniciar sesión.
-- Persistencia en JSON.
+### Settings
+- Customizable wallpaper folder
+- Autostart with Hyprland
+- Restore last wallpaper on login
+- JSON persistence
 
-### Integración con Hyprland
-- Detección automática de monitores con `hyprctl`.
-- Compatibilidad con `hyprpaper` y `mpvpaper`.
-- Aplicación de cambios sin reiniciar Hyprland.
+### Hyprland integration
+- Automatic monitor detection with `hyprctl`
+- Compatible with `hyprpaper` and `mpvpaper`
+- Apply changes without restarting Hyprland
 
 ### Extras
-- Arrastrar y soltar para añadir wallpapers.
-- Rotación automática de fondos.
-- Listas de reproducción.
-- Atajos de teclado.
-- Soporte multi-monitor.
-- Notificaciones al cambiar de fondo.
-- Exportación e importación de configuraciones.
+- Drag and drop to add wallpapers
+- Auto-rotation
+- Playlists
+- Keyboard shortcuts
+- Multi-monitor support
+- Notifications on wallpaper change
+- Export and import configuration
 
-## Requisitos
+## Requirements
 
-### Dependencias del sistema
+### System dependencies
 ```bash
 sudo pacman -S hyprland hyprpaper mpvpaper mpv python python-pip
 ```
 
-### Dependencias de Python
+### Python dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-## Instalación
+## Installation
 
-### Desde AUR (recomendado)
+### Manual (pip)
 ```bash
-yay -S wallpaper-manager
-```
-
-### Manual
-```bash
-git clone https://github.com/example/wallpaper-manager.git
-cd wallpaper-manager
+git clone https://github.com/staFF6773/winterland.git
+cd winterland
 pip install -e .
 ```
 
-## Uso
+### PKGBUILD (local build)
+```bash
+git clone https://github.com/staFF6773/winterland.git
+cd winterland
+makepkg -si
+```
+
+## Usage
 
 ```bash
-wallpaper-manager
+winterland
 ```
 
-### Inicio automático con Hyprland
-Añade la siguiente línea a `~/.config/hypr/hyprland.conf`:
+### Autostart with Hyprland
+Add the following line to `~/.config/hypr/hyprland.conf`:
 ```
-exec-once = wallpaper-manager
+exec-once = winterland
 ```
 
-## Estructura del proyecto
+## Project structure
 
 ```
-wallpaper-manager/
-├── main.py                 # Punto de entrada
-├── gui/                    # Interfaz gráfica (PySide6)
-│   ├── components/         # Componentes reutilizables
+winterland/
+├── main.py                 # Entry point
+├── gui/                    # GUI (PySide6)
+│   ├── components/         # Reusable components
 │   └── ...
-├── backend/                # Lógica de negocio
-├── config/                 # Gestión de configuración
-├── assets/                 # Recursos (iconos SVG, estilos QSS)
-├── utils/                  # Utilidades
-└── wallpapers/             # Carpeta por defecto
+├── backend/                # Business logic
+├── config/                 # Configuration management
+├── assets/                 # Resources (icons, QSS styles)
+├── utils/                  # Utilities
+└── wallpapers/             # Default wallpaper folder
 ```
 
-## Atajos de teclado
+## Keyboard shortcuts
 
-| Atajo            | Acción                          |
-|------------------|---------------------------------|
-| `Ctrl+O`         | Añadir wallpaper                |
-| `Ctrl+F`         | Buscar                          |
-| `Ctrl+S`         | Guardar configuración           |
-| `Ctrl+,`         | Abrir ajustes                   |
-| `Espacio`        | Reproducir/Pausar (animado)     |
-| `R`              | Rotar al siguiente wallpaper    |
-| `F`              | Marcar como favorito            |
-| `Del`            | Eliminar de la biblioteca       |
-| `F11`            | Pantalla completa               |
+| Shortcut        | Action                          |
+|-----------------|---------------------------------|
+| `Ctrl+O`        | Add wallpaper                   |
+| `Ctrl+F`        | Search                          |
+| `Ctrl+S`        | Save configuration              |
+| `Ctrl+,`        | Open settings                   |
+| `Space`         | Play/Pause (animated)           |
+| `R`             | Rotate to next wallpaper        |
+| `F`             | Toggle favorite                 |
+| `Del`           | Remove from library             |
+| `F11`           | Fullscreen                      |
 
-## Licencia
+## License
 
-MIT
+GNU General Public License v3.0 or later
